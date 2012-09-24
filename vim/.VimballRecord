@@ -1,0 +1,1 @@
+phpErrorMarker.vba: call delete('/home/michael.graf/.vim/autoload/phpErrorMarker.vim')|call delete('/home/michael.graf/.vim/ftplugin/php/phpErrorMarker.vim')
