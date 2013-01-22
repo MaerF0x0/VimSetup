@@ -14,6 +14,9 @@ set backspace=start,indent
 " I dont like wrapped text
 set nowrap
 
+" override spaces for ruby files:
+autocmd Filetype ruby set local ts=2 sts=2 sw=2
+
 " I dont like swap files
 set noswapfile
 
