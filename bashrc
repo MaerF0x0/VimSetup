@@ -102,8 +102,14 @@ function git_branch {
   fi
 }
 
+function get_jobs {
+	echo "${COLOR_BLUE}[\\j]"
+}
 
-PS1="[\[$(tput setaf 5)\]\w\[$(tput sgr0)\]]" # [pwd]
+
+PS1="{\[$(tput setaf 5)\]\w\[$(tput sgr0)\]}" # [pwd]
 PS1+="\[\$(git_color)\]\$(git_branch)" # colored git branch name
-PS1+="\[$(tput setaf 1)\]\\$ \[$(tput sgr0)\]" # red " $ " or " # "
+#PS1+="\[$(tput setaf 6)\]{\j}\[$(tput sgr0)\]"
+PS1+=$(get_jobs)
+PS1+="\[$(tput setaf 1)\] \\$ \[$(tput sgr0)\]" # red " $ " or " # "
 export PS1
