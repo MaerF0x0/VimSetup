@@ -1,9 +1,3 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =7
-let g:netrw_dirhist_1='/home/poweruser/dev/library/MyCannonBall/Plan'
-let g:netrw_dirhist_2='/home/poweruser/dev/library/MyCannonBall'
-let g:netrw_dirhist_3='/home/poweruser/dev/library/MyCannonBall/PlanStatus'
-let g:netrw_dirhist_4='/home/poweruser/dev/library/MyCannonBall'
-let g:netrw_dirhist_5='/home/poweruser/dev/library/MyCannonBall/PlanMedia'
-let g:netrw_dirhist_6='/home/poweruser/dev/library/MyCannonBall'
-let g:netrw_dirhist_7='/home/poweruser/dev/application/workers'
+let g:netrw_dirhist_cnt =1
+let g:netrw_dirhist_1='/Users/mgraf/go/src/github.com/Clever/pr-notifier/pr'

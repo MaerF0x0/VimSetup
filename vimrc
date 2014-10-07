@@ -1,21 +1,37 @@
-"syntax hilighting? yes please
-syntax enable
+" Vundle must go first
 set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" Bundles go next
+Bundle 'gmarik/vundle'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'fatih/vim-go'
+Bundle 'godlygeek/tabular'
+Bundle 'plasticboy/vim-markdown'
+
+" Rest of VimRC now
+syntax enable
+filetype plugin indent on
+
 
 " I prefer 1 "tab" per line
-set shiftwidth=4
+set shiftwidth=2
 " I prefer 4 space per tab
-set tabstop=4
-set softtabstop=4
+set tabstop=2
+set softtabstop=2
 set expandtab
-" set smarttab
-set backspace=start,indent
 
 " I dont like wrapped text
 set nowrap
 
-" override spaces for ruby files:
-autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
+"Set an 80 char width reminder
+highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+match OverLength /\%81v.\+/
+" I like line numbers and column numbers
+set ruler
 
 " I dont like swap files
 set noswapfile
@@ -63,9 +79,6 @@ else
 endif
 set backspace=start,indent,eol
 
-set directory=~/.vim/swap
-au BufRead,BufNewFile *.svn-base set filetype=php
-au BufRead,BufNewFile *.php set filetype=php
 " Use mouse
 set mouse=a
 
@@ -81,13 +94,7 @@ set smartcase
 "" ... but not for tab complete
 set infercase
 
-filetype indent off
-filetype on
-
 set fo+=r       " formatoptions r adds new comment line automagically
-
-" ok now for some cool stuff
-:autocmd FileType php noremap pl :!/usr/bin/php -l %<CR>
 
 " Tab based autocomplete
 function! InsertTabWrapper()
@@ -101,40 +108,23 @@ endfunction
 
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
-" insert a php doc block
-map pd :call PhpDocSingle()<CR>
-" auto insert a require_once
-map ro lbveyOp0k:s/_/\//girequire_once 'A.php';==
-
-function! ZendFileName(fname)
-    let l:newname = substitute(a:fname, '_', '\/', 'g') . '.php'
-    return l:newname
-endfunction
-
-
 " C-l will show numbers
 map <C-l> :set invnu<CR>
-" set cntrl-u to uncomment (PHP)  a line and keep the whitespace
-map <C-u> :s/^\(\s*\)\/\/\(\s*\)/\1\2/<Enter>
-
-set path+=~/code/zend-current/library 
-set path+=~/code/zend-current/application/library 
-set suffixesadd=.php
-set includeexpr=ZendFileName(v:fname)
 
 set hlsearch
 
 " Highlight variables under cursor
 :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
-" get log of highlighted lines (or current line)
-vmap gl :<C-U>!svn blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 map <F1> <Esc>
 imap <F1> <Esc> 
 
-au BufNewFile,BufRead *.sms set filetype=phtml
-au BufNewFile,BufRead *.email set filetype=phtml
-au BufNewFile,BufRead *.push set filetype=phtml
-au BufNewFile,BufRead *.fb set filetype=phtml
-au BufNewFile,BufRead *.tw set filetype=phtml
+" jump to compiled version of line in CoffeeScript
+command -nargs=1 C CoffeeCompile | :<args>
+" I prefer vert splits
+let coffee_watch_vert = 1
+" I like line numbers
+set number
 
+" I want to reload external changes
+set autoread

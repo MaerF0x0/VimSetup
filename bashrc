@@ -74,6 +74,7 @@ COLOR_BLUE="\033[0;34m"
 COLOR_WHITE="\033[0;37m"
 COLOR_RESET="\033[0m"
 
+
 function git_color {
   local git_status="$(git status 2> /dev/null)"
 
@@ -113,3 +114,41 @@ PS1+="\[\$(git_color)\]\$(git_branch)" # colored git branch name
 PS1+=$(get_jobs)
 PS1+="\[$(tput setaf 1)\] \\$ \[$(tput sgr0)\]" # red " $ " or " # "
 export PS1
+
+export HISTSIZE=''
+export HISTFILESIZE=''
+export PROMPT_COMMAND='history -a'
+
+MONGO_URL=mongodb://localhost:27017
+
+function deploy_time {
+  cd $CODE_HOME/fabulaws && workon fabulaws && fab -l;
+}
+
+function goto {
+  if [ "$#" -ne 1 ]; then
+    echo "usage: goto <project dir>";
+    return -1;
+  fi
+
+  DIR="${CODE_HOME}/${1}"
+  if [ -d "$DIR" ]; then 
+    cd ${DIR};
+  else
+    echo "${DIR} is not a directory"
+    return -2;
+  fi
+}
+
+function _goto_autocomplete {
+  local cur prev opts
+
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+  opts=`ls ${CODE_HOME}`
+
+  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
+complete -F _goto_autocomplete goto
