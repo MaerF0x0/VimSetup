@@ -11,7 +11,7 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'fatih/vim-go'
 Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
-
+Plugin 'esneider/YUNOcommit.vim'
 " Rest of VimRC now
 syntax enable
 filetype plugin indent on
