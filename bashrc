@@ -122,7 +122,7 @@ export PROMPT_COMMAND='history -a'
 MONGO_URL=mongodb://localhost:27017
 
 function deploy_time {
-  cd $CODE_HOME/fabulaws && workon fabulaws && fab -l;
+  cd $CODE_HOME/fabulaws && git co master && git pull && workon fabulaws && fab -l;
 }
 
 function goto {
@@ -133,7 +133,11 @@ function goto {
 
   DIR="${CODE_HOME}/${1}"
   if [ -d "$DIR" ]; then 
-    cd ${DIR};
+    if [[ $DIR == */fabulaws ]]; then
+      deploy_time;
+    else
+      cd ${DIR} && git pull;
+    fi
   else
     echo "${DIR} is not a directory"
     return -2;
@@ -151,4 +155,12 @@ function _goto_autocomplete {
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
 
+function updatedb {
+  sudo /usr/libexec/locate.updatedb
+}
+
 complete -F _goto_autocomplete goto
+
+function mark_down {
+ open -a "Google Chrome" ${1}
+}
