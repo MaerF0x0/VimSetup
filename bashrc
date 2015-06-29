@@ -11,7 +11,7 @@ shopt -s checkwinsize
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     eval "`dircolors -b`"
     alias ls='ls --color=auto'
-
+    alias watch='watch --color'
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -50,7 +50,6 @@ function ff() {
 function fc() {
     grep "class $1" $(find ./ -name "*.php")
 }
- 
 function php_check_all() {
     for i in $(find ./ -name "*.php"); do
         msg=`php -l $i`
@@ -119,8 +118,6 @@ export HISTSIZE=''
 export HISTFILESIZE=''
 export PROMPT_COMMAND='history -a'
 
-MONGO_URL=mongodb://localhost:27017
-
 function deploy_time {
   cd $CODE_HOME/fabulaws && git co master && git pull && workon fabulaws && fab -l;
 }
@@ -132,7 +129,7 @@ function goto {
   fi
 
   DIR="${CODE_HOME}/${1}"
-  if [ -d "$DIR" ]; then 
+  if [ -d "$DIR" ]; then
     if [[ $DIR == */fabulaws ]]; then
       deploy_time;
     else
@@ -142,6 +139,8 @@ function goto {
     echo "${DIR} is not a directory"
     return -2;
   fi
+
+  ls;
 }
 
 function _goto_autocomplete {
@@ -162,5 +161,42 @@ function updatedb {
 complete -F _goto_autocomplete goto
 
 function mark_down {
- open -a "Google Chrome" ${1}
+  MY_PARAM=${1:-README.md}
+  open -a "Markdown Pro" "${MY_PARAM}"
 }
+
+function refresh_repos {
+  cd ${CODE_HOME};
+  # Update the repos
+  find . -maxdepth 1 -type d | xargs -P `sysctl -n hw.ncpu` -I% sh -c 'cd "%" && git co master && git pull'
+}
+
+source ~/.bash_profile_clever
+source ~/.clever_bash
+. ~/nvm/nvm.sh
+source /usr/local/bin/virtualenvwrapper.sh
+export GOPATH=~/go
+export PATH=$PATH:$GOPATH/bin
+
+function gearman_status {
+  watch 'echo "Func | Queue | Run | Workers"; (echo status ; sleep 0.1) | nc 10.0.2.231 4730'
+}
+
+function gearman_workers {
+  watch 'echo "fd|   IP   | cid | : Functions " ; (echo workers ; sleep 0.1) | nc 10.0.2.231 4730'
+}
+
+# Git autocompletion
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+export GOMAXPROCS=4
+# {{{
+# Node Completion - Auto-generated, do not touch.
+shopt -s progcomp
+for f in $(command ls ~/.node-completion); do
+  f="$HOME/.node-completion/$f"
+  test -f "$f" && . "$f"
+done
+# }}}
