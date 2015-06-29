@@ -11,7 +11,11 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'fatih/vim-go'
 Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
-Plugin 'esneider/YUNOcommit.vim'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'bling/vim-airline'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'groenewege/vim-less'
+Bundle 'tpope/vim-fugitive'
 " Rest of VimRC now
 syntax enable
 filetype plugin indent on
@@ -41,7 +45,7 @@ nnoremap n nzzzv
 nnoremap N Nzzzv
 
 " Some alternate listchars
-set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
+set list listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮
 
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
@@ -67,12 +71,12 @@ hi Comment ctermfg=darkgrey
 
 highlight DiffAdd cterm=none ctermfg=gray ctermbg=darkblue
 highlight DiffDelete cterm=none ctermfg=gray ctermbg=cyan
-highlight DiffChange cterm=none ctermfg=green ctermbg=black 
-highlight DiffText cterm=none ctermfg=green ctermbg=darkgreen 
+highlight DiffChange cterm=none ctermfg=green ctermbg=black
+highlight DiffText cterm=none ctermfg=green ctermbg=darkgreen
 highlight Directory cterm=none ctermfg=lightblue ctermbg=none
 
 set t_Co=256
-if &diff 
+if &diff
     colorscheme slate2
 else
     colorscheme molokai
@@ -117,7 +121,7 @@ set hlsearch
 :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
 map <F1> <Esc>
-imap <F1> <Esc> 
+imap <F1> <Esc>
 
 " jump to compiled version of line in CoffeeScript
 command -nargs=1 C CoffeeCompile | :<args>
@@ -128,3 +132,17 @@ set number
 
 " I want to reload external changes
 set autoread
+
+"the_silver_searcher for :grep
+if executable('ag')
+    " Note we extract the column as well as the file and line number
+    set grepprg=ag\ --nogroup\ --nocolor\ --column
+    set grepformat=%f:%l:%c%m
+endif
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
