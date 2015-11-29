@@ -73,7 +73,6 @@ COLOR_BLUE="\033[0;34m"
 COLOR_WHITE="\033[0;37m"
 COLOR_RESET="\033[0m"
 
-
 function git_color {
   local git_status="$(git status 2> /dev/null)"
 
@@ -103,15 +102,16 @@ function git_branch {
 }
 
 function get_jobs {
-	echo "${COLOR_BLUE}[\\j]"
+	echo -e "\\[${COLOR_BLUE}\\][\\j]\\[${COLOR_RESET}\\]"
 }
 
 
-PS1="{\[$(tput setaf 5)\]\w\[$(tput sgr0)\]}" # [pwd]
-PS1+="\[\$(git_color)\]\$(git_branch)" # colored git branch name
-#PS1+="\[$(tput setaf 6)\]{\j}\[$(tput sgr0)\]"
+PS1="{\\[${COLOR_OCHRE}\\]\w\\[${COLOR_RESET}}\\]" # [pwd]
+PS1+="\\[\$(git_color)\\]"
+PS1+="\$(git_branch)"
+PS1+="\\[${COLOR_RESET}\\]" # colored git branch name
 PS1+=$(get_jobs)
-PS1+="\[$(tput setaf 1)\] \\$ \[$(tput sgr0)\]" # red " $ " or " # "
+PS1+="\\[${COLOR_RED}\\] \\$ \\[${COLOR_RESET}\\]" # red " $ " or " # "
 export PS1
 
 export HISTSIZE=''
@@ -160,23 +160,14 @@ function updatedb {
 
 complete -F _goto_autocomplete goto
 
-function mark_down {
-  MY_PARAM=${1:-README.md}
-  open -a "Markdown Pro" "${MY_PARAM}"
-}
-
 function refresh_repos {
   cd ${CODE_HOME};
   # Update the repos
   find . -maxdepth 1 -type d | xargs -P `sysctl -n hw.ncpu` -I% sh -c 'cd "%" && git co master && git pull'
 }
 
-source ~/.bash_profile_clever
-source ~/.clever_bash
-. ~/nvm/nvm.sh
-source /usr/local/bin/virtualenvwrapper.sh
-export GOPATH=~/go
-export PATH=$PATH:$GOPATH/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:/usr/local/go/bin
 
 function gearman_status {
   watch 'echo "Func | Queue | Run | Workers"; (echo status ; sleep 0.1) | nc 10.0.2.231 4730'
@@ -192,11 +183,3 @@ if [ -f ~/.git-completion.bash ]; then
 fi
 
 export GOMAXPROCS=4
-# {{{
-# Node Completion - Auto-generated, do not touch.
-shopt -s progcomp
-for f in $(command ls ~/.node-completion); do
-  f="$HOME/.node-completion/$f"
-  test -f "$f" && . "$f"
-done
-# }}}
