@@ -15,6 +15,8 @@ Bundle 'fatih/vim-go'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
+Bundle 'luochen1990/rainbow'
+Bundle 'airblade/vim-gitgutter'
 
 call vundle#end()
 
