@@ -1,21 +1,23 @@
-" Vundle must go first
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+
+"set the runtime path include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle
+Plugin 'VundleVim/Vundle.vim'
+
 
 " Bundles go next
-Bundle 'gmarik/vundle'
-Bundle 'kchmck/vim-coffee-script'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'fatih/vim-go'
-Bundle 'godlygeek/tabular'
 Bundle 'plasticboy/vim-markdown'
-Bundle 'terryma/vim-multiple-cursors'
 Bundle 'bling/vim-airline'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'groenewege/vim-less'
 Bundle 'tpope/vim-fugitive'
+
+call vundle#end()
+
 " Rest of VimRC now
 syntax enable
 filetype plugin indent on
@@ -146,3 +148,6 @@ fun! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+
+let g:go_fmt_command = "goimports"
+
