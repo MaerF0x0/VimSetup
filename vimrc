@@ -13,10 +13,19 @@ Plugin 'VundleVim/Vundle.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'fatih/vim-go'
 Bundle 'plasticboy/vim-markdown'
-Bundle 'bling/vim-airline'
+"Bundle 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
-Bundle 'luochen1990/rainbow'
+"Bundle 'luochen1990/rainbow'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'rking/ag.vim'
+Bundle 'kchmck/vim-coffee-script'
+"Python
+Bundle 'pyflakes'
+Bundle 'yssource/python.vim'
+Bundle 'python_match.vim'
+Bundle 'pythoncomplete'
+"Thrift
+Bundle 'solarnz/thrift.vim'
 
 call vundle#end()
 
@@ -151,5 +160,8 @@ fun! <SID>StripTrailingWhitespaces()
 endfun
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
+autocmd FileType go set nolist
 let g:go_fmt_command = "goimports"
+autocmd BufNewFile,BufRead *.coffee set filetype=coffee
+autocmd BufNewFile,BufRead *.es6    set filetype=javascript
 
