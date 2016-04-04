@@ -44,11 +44,11 @@ function superlist() {
 }
 
 function ff() {
-    grep "function $1" $(find ./ -name "*.php")
+    ag "def $1"
 }
 
 function fc() {
-    grep "class $1" $(find ./ -name "*.php")
+    ag "class $1"
 }
 function php_check_all() {
     for i in $(find ./ -name "*.php"); do
@@ -127,20 +127,17 @@ function goto {
     echo "usage: goto <project dir>";
     return -1;
   fi
-
+  GODIR="${GOPATH}/src/github.com/leftronic/${1}"
   DIR="${CODE_HOME}/${1}"
-  if [ -d "$DIR" ]; then
-    if [[ $DIR == */fabulaws ]]; then
-      deploy_time;
-    else
-      cd ${DIR} && git pull;
-    fi
+  if [ -d "$GODIR" ]; then
+    cd ${GODIR} && git pull && ls;
+  elif [ -d "$DIR" ]; then
+    cd ${DIR} && git pull && ls;
   else
     echo "${DIR} is not a directory"
     return -2;
   fi
 
-  ls;
 }
 
 function _goto_autocomplete {
@@ -149,7 +146,7 @@ function _goto_autocomplete {
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-  opts=`ls ${CODE_HOME}`
+  opts="`ls ${CODE_HOME}` `ls ${GOPATH}/src/github.com/leftronic`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
@@ -183,3 +180,12 @@ if [ -f ~/.git-completion.bash ]; then
 fi
 
 export GOMAXPROCS=4
+source ~/.bashenv
+source ~/VimSetup/git-completion.bash
+alias pg='postgres -D /usr/local/var/postgres'
+alias dc='docker-compose'
+alias dm='docker-machine'
+#sudo sep stop
+function title() {
+echo -e '\033k'$1'\033\\'
+}
