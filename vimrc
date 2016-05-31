@@ -24,6 +24,8 @@ Bundle 'pyflakes'
 Bundle 'yssource/python.vim'
 Bundle 'python_match.vim'
 Bundle 'pythoncomplete'
+Bundle 'vim-scripts/indentpython.vim'
+
 "Thrift
 Bundle 'solarnz/thrift.vim'
 
@@ -113,6 +115,11 @@ set infercase
 
 set fo+=r       " formatoptions r adds new comment line automagically
 
+" Python PEP8 standard
+" https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
+au BufNewFile,BufRead *.py set tabstop=4 |set softtabstop=4 |set shiftwidth=4 |set textwidth=79 |set expandtab |set autoindent |set fileformat=unix
+
+
 " Tab based autocomplete
 function! InsertTabWrapper()
       let col = col('.') - 1
@@ -133,6 +140,8 @@ set hlsearch
 " Highlight variables under cursor
 :autocmd CursorMoved * silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 
+" On my laptop I'm always hitting F1 instead of esc.. Really annoying to get
+" into help views when i want to leave
 map <F1> <Esc>
 imap <F1> <Esc>
 
@@ -152,6 +161,8 @@ if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor\ --column
     set grepformat=%f:%l:%c%m
 endif
+
+" Delete whitespaces on save
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
     let c = col(".")
@@ -160,8 +171,18 @@ fun! <SID>StripTrailingWhitespaces()
 endfun
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
+" Go (golang) options
 autocmd FileType go set nolist
 let g:go_fmt_command = "goimports"
+
+" Fold code based on syntax but only to 1 level
+"set foldmethod=syntax
+"set foldnestmax=2
+
+" Save views for folding
+"au BufWinLeave ?* mkview
+"au BufWinEnter ?* silent loadview
+
 autocmd BufNewFile,BufRead *.coffee set filetype=coffee
 autocmd BufNewFile,BufRead *.es6    set filetype=javascript
 
