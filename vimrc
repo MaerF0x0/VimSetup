@@ -20,11 +20,12 @@ Bundle 'airblade/vim-gitgutter'
 Bundle 'rking/ag.vim'
 Bundle 'kchmck/vim-coffee-script'
 "Python
-Bundle 'pyflakes'
-Bundle 'yssource/python.vim'
-Bundle 'python_match.vim'
-Bundle 'pythoncomplete'
-Bundle 'vim-scripts/indentpython.vim'
+"Bundle 'syntastic'
+"Bundle 'pyflakes'
+"Bundle 'yssource/python.vim'
+"Bundle 'python_match.vim'
+"Bundle 'pythoncomplete'
+"Bundle 'vim-scripts/indentpython.vim'
 
 "Thrift
 Bundle 'solarnz/thrift.vim'
@@ -118,7 +119,7 @@ set fo+=r       " formatoptions r adds new comment line automagically
 " Python PEP8 standard
 " https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven/
 au BufNewFile,BufRead *.py set tabstop=4 |set softtabstop=4 |set shiftwidth=4 |set textwidth=79 |set expandtab |set autoindent |set fileformat=unix
-
+let g:syntastic_check_on_wq = 0
 
 " Tab based autocomplete
 function! InsertTabWrapper()
@@ -164,6 +165,10 @@ endif
 
 " Delete whitespaces on save
 fun! <SID>StripTrailingWhitespaces()
+ " Only strip if the b:noStripeWhitespace variable isn't set
+    if exists('b:noStripWhitespace')
+        return
+    endif
     let l = line(".")
     let c = col(".")
     %s/\s\+$//e
@@ -172,6 +177,7 @@ endfun
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " Go (golang) options
+autocmd FileType go let b:noStripWhitespace=1
 autocmd FileType go set nolist
 let g:go_fmt_command = "goimports"
 
