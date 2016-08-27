@@ -129,10 +129,12 @@ function goto {
   fi
   GODIR="${GOPATH}/src/github.com/leftronic/${1}"
   DIR="${CODE_HOME}/${1}"
-  if [ -d "$GODIR" ]; then
-    cd ${GODIR} && git pull && ls;
+  if [ -d "`readlink $DIR`" ]; then
+      cd `readlink $DIR`
   elif [ -d "$DIR" ]; then
     cd ${DIR} && git pull && ls;
+  elif [ -d "$GODIR" ]; then
+    cd ${GODIR} && git pull && ls;
   else
     echo "${DIR} is not a directory"
     return -2;
