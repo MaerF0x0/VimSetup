@@ -130,7 +130,7 @@ function goto {
   GODIR="${GOPATH}/src/github.com/leftronic/${1}"
   DIR="${CODE_HOME}/${1}"
   if [ -d "`readlink $DIR`" ]; then
-      cd `readlink $DIR`
+      cd `readlink $DIR` && git pull && ls;
   elif [ -d "$DIR" ]; then
     cd ${DIR} && git pull && ls;
   elif [ -d "$GODIR" ]; then
@@ -148,7 +148,9 @@ function _goto_autocomplete {
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-  opts="`ls ${CODE_HOME}` `ls ${GOPATH}/src/github.com/leftronic`"
+  home_opts="`ls -d ${CODE_HOME}*/`"
+  go_src_opts="`ls -d ${GOPATH}/src/github.com/leftronic/*/`"
+  opts="`basename ${home_opts}` `basename ${go_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
