@@ -102,16 +102,15 @@ function git_branch {
 }
 
 function get_jobs {
-	echo -e "\\[${COLOR_BLUE}\\][\\j]\\[${COLOR_RESET}\\]"
+  echo -e ""
 }
 
 
-PS1="{\\[${COLOR_OCHRE}\\]\w\\[${COLOR_RESET}}\\]" # [pwd]
-PS1+="\\[\$(git_color)\\]"
-PS1+="\$(git_branch)"
-PS1+="\\[${COLOR_RESET}\\]" # colored git branch name
-PS1+=$(get_jobs)
-PS1+="\\[${COLOR_RED}\\] \\$ \\[${COLOR_RESET}\\]" # red " $ " or " # "
+PS1="\n\[$COLOR_WHITE\]{\[$COLOR_OCHRE\]\w\[$COLOR_WHITE\]}"          # basename of pwd
+PS1+="\[\$(git_color)\]"        # colors git status
+PS1+="\$(git_branch)"           # prints current branch
+PS1+="\[${COLOR_BLUE}\][\j]"             # prints job count
+PS1+="\[$COLOR_BLUE\]\$\[$COLOR_RESET\] "   # '#' for root, else '$'
 export PS1
 
 export HISTSIZE=''
@@ -127,7 +126,7 @@ function goto {
     echo "usage: goto <project dir>";
     return -1;
   fi
-  GODIR="${GOPATH}/src/github.com/leftronic/${1}"
+  GODIR="${GOPATH}/src/github.com/AppDirect/${1}"
   DIR="${CODE_HOME}/${1}"
   if [ -d "`readlink $DIR`" ]; then
       cd `readlink $DIR` && git pull && ls;
@@ -149,7 +148,7 @@ function _goto_autocomplete {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   home_opts="`ls -d ${CODE_HOME}*/`"
-  go_src_opts="`ls -d ${GOPATH}/src/github.com/leftronic/*/`"
+  go_src_opts="`ls -d ${GOPATH}/src/github.com/AppDirect/*/`"
   opts="`basename ${home_opts}` `basename ${go_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
@@ -183,12 +182,23 @@ if [ -f ~/.git-completion.bash ]; then
   . ~/.git-completion.bash
 fi
 
-export GOMAXPROCS=4
 source ~/.bashenv
 source ~/VimSetup/git-completion.bash
 alias pg='postgres -D /usr/local/var/postgres'
 alias dc='docker-compose'
 alias dm='docker-machine'
+
+alias github=do_github
+do_github() {
+  dirname=$(printf '%q\n' "${PWD##*/}")
+  git remote -v  | grep leftronic >/dev/null
+  if [ $? -eq 0 ]
+  then
+    open -a "Google Chrome" https://github.com/leftronic/${dirname}
+  else
+    open -a "Google Chrome" https://github.com/AppDirect/${dirname}
+  fi
+}
 #sudo sep stop
 function title() {
 echo -e '\033k'$1'\033\\'
@@ -207,6 +217,10 @@ _ssh()
     return 0
 }
 complete -F _ssh ssh
+
+function djcoverage() {
+   open -a "Google Chrome" ${CODE_HOME}/venom/djvenom/htmlcov/index.html
+}
 
 # For https://github.com/dweomer/docker-swarm-consul
 #export MACHINE_STORAGE_PATH="$( cd "$(dirname "${BASH_SOURCE:-$0}")" ; pwd -P )"
