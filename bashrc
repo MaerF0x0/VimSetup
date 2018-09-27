@@ -59,7 +59,7 @@ function php_check_all() {
     done
 }
 
-alias vi='vim -p'
+alias vi='vim -O'
 alias gitx='open -a GitX .'
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
@@ -118,7 +118,9 @@ export HISTFILESIZE=''
 export PROMPT_COMMAND='history -a'
 
 function deploy_time {
-  cd $CODE_HOME/fabulaws && git co master && git pull && workon fabulaws && fab -l;
+  cd $CODE_HOME/ecs;
+  nsite -v
+  nsite --help
 }
 
 function goto {
@@ -128,12 +130,15 @@ function goto {
   fi
   GODIR="${GOPATH}/src/github.com/AppDirect/${1}"
   DIR="${CODE_HOME}/${1}"
+  NODE_MODULE_DIR="${CODE_HOME}/_node_modules/${1}"
   if [ -d "`readlink $DIR`" ]; then
       cd `readlink $DIR` && git pull && ls;
   elif [ -d "$DIR" ]; then
     cd ${DIR} && git pull && ls;
   elif [ -d "$GODIR" ]; then
     cd ${GODIR} && git pull && ls;
+  elif [ -d "$NODE_MODULE_DIR" ]; then
+    cd ${NODE_MODULE_DIR} && git pull && ls;
   else
     echo "${DIR} is not a directory"
     return -2;
@@ -149,7 +154,8 @@ function _goto_autocomplete {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   home_opts="`ls -d ${CODE_HOME}*/`"
   go_src_opts="`ls -d ${GOPATH}/src/github.com/AppDirect/*/`"
-  opts="`basename ${home_opts}` `basename ${go_src_opts}`"
+  node_src_opts="`ls -d ${CODE_HOME}/_node_modules/*/`"
+  opts="`basename ${home_opts}` `basename ${go_src_opts}` `basename ${node_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
@@ -219,7 +225,15 @@ _ssh()
 complete -F _ssh ssh
 
 function djcoverage() {
-   open -a "Google Chrome" ${CODE_HOME}/venom/djvenom/htmlcov/index.html
+   open -a "Google Chrome" ${CODE_HOME}/appinsights-venom/djvenom/htmlcov/index.html
+}
+function code () {
+   open -a "Visual Studio Code" $1
+}
+
+function jsonprint() {
+  node -e "console.log(JSON.stringify(JSON.parse(require('fs') \
+        .readFileSync(process.argv[1])), null, 4));"  $1
 }
 
 # For https://github.com/dweomer/docker-swarm-consul

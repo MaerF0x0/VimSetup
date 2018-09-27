@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e 
+
+echo "git pre-commit: running..."
+
+# check for a package.json
+ROOT="$(git rev-parse --show-toplevel)"
+
+if [ -d "$ROOT/djvenom" ]; then
+  git diff --name-only --cached | grep .py | xargs flake8
+  echo "✅: flake8 "
+fi
+
+if [ -f $ROOT/.circleci/config.yml ]; then
+  exec < /dev/tty # needed due to docker interactivity
+  if ! eMSG=$(circleci config validate -c .circleci/config.yml); then
+    echo "CircleCI Configuration Failed Validation."
+    echo $eMSG
+    exit 1
+  fi
+  echo "✅: circleci conf"
+fi
+
+# If there are go files
+if [[ `find . -name *.go` ]]; then
+  if [[ -f $ROOT/bin/test.sh ]]; then
+    $ROOT/bin/test.sh
+    echo "✅: go tests"
+  fi
+  go vet $(go list ./... |grep -v /vendor/)
+  echo "✅: go vet"
+  if [[ `which golint` ]]; then
+    golint $(go list ./... |grep -v /vendor/)
+    echo "✅: golint"
+  fi
+fi
+
