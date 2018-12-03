@@ -128,17 +128,14 @@ function goto {
     echo "usage: goto <project dir>";
     return -1;
   fi
-  GODIR="${GOPATH}/src/github.com/AppDirect/${1}"
+  GODIR="${GOPATH}/src/github.com/sendgrid/${1}"
   DIR="${CODE_HOME}/${1}"
-  NODE_MODULE_DIR="${CODE_HOME}/_node_modules/${1}"
   if [ -d "`readlink $DIR`" ]; then
       cd `readlink $DIR` && git pull && ls;
   elif [ -d "$DIR" ]; then
     cd ${DIR} && git pull && ls;
   elif [ -d "$GODIR" ]; then
     cd ${GODIR} && git pull && ls;
-  elif [ -d "$NODE_MODULE_DIR" ]; then
-    cd ${NODE_MODULE_DIR} && git pull && ls;
   else
     echo "${DIR} is not a directory"
     return -2;
@@ -153,9 +150,8 @@ function _goto_autocomplete {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   home_opts="`ls -d ${CODE_HOME}*/`"
-  go_src_opts="`ls -d ${GOPATH}/src/github.com/AppDirect/*/`"
-  node_src_opts="`ls -d ${CODE_HOME}/_node_modules/*/`"
-  opts="`basename ${home_opts}` `basename ${go_src_opts}` `basename ${node_src_opts}`"
+  go_src_opts="`ls -d ${GOPATH}/src/github.com/sendgrid/*/`"
+  opts="`basename ${home_opts}` `basename ${go_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
@@ -189,7 +185,7 @@ if [ -f ~/.git-completion.bash ]; then
 fi
 
 source ~/.bashenv
-source ~/VimSetup/git-completion.bash
+source $CODE_HOME/VimSetup/git-completion.bash
 alias pg='postgres -D /usr/local/var/postgres'
 alias dc='docker-compose'
 alias dm='docker-machine'
@@ -197,15 +193,8 @@ alias dm='docker-machine'
 alias github=do_github
 do_github() {
   dirname=$(printf '%q\n' "${PWD##*/}")
-  git remote -v  | grep leftronic >/dev/null
-  if [ $? -eq 0 ]
-  then
-    open -a "Google Chrome" https://github.com/leftronic/${dirname}
-  else
-    open -a "Google Chrome" https://github.com/AppDirect/${dirname}
-  fi
+  open -a "Google Chrome" https://github.com/sendgrid/${dirname}
 }
-#sudo sep stop
 function title() {
 echo -e '\033k'$1'\033\\'
 }
@@ -236,5 +225,6 @@ function jsonprint() {
         .readFileSync(process.argv[1])), null, 4));"  $1
 }
 
-# For https://github.com/dweomer/docker-swarm-consul
-#export MACHINE_STORAGE_PATH="$( cd "$(dirname "${BASH_SOURCE:-$0}")" ; pwd -P )"
+if [ `which aws_completer` ]; then
+  complete -C `which aws_completer` aws
+fi
