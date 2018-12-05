@@ -151,7 +151,7 @@ function _goto_autocomplete {
   prev="${COMP_WORDS[COMP_CWORD-1]}"
   home_opts="`ls -d ${CODE_HOME}*/`"
   go_src_opts="`ls -d ${GOPATH}/src/github.com/sendgrid/*/`"
-  opts="`basename ${home_opts}` `basename ${go_src_opts}`"
+  opts="`basename -a ${home_opts}` `basename -a ${go_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
