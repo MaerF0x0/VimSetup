@@ -149,18 +149,18 @@ function _goto_autocomplete {
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
-  home_opts="`ls -d ${CODE_HOME}*/`"
+  home_opts="`ls -d ${CODE_HOME}/*/`"
   go_src_opts="`ls -d ${GOPATH}/src/github.com/sendgrid/*/`"
   opts="`basename -a ${home_opts}` `basename -a ${go_src_opts}`"
 
   COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
 
+complete -F _goto_autocomplete goto
+
 function updatedb {
   sudo /usr/libexec/locate.updatedb
 }
-
-complete -F _goto_autocomplete goto
 
 function refresh_repos {
   cd ${CODE_HOME};
@@ -189,6 +189,7 @@ source $CODE_HOME/VimSetup/git-completion.bash
 alias pg='postgres -D /usr/local/var/postgres'
 alias dc='docker-compose'
 alias dm='docker-machine'
+alias ag='ag --path-to-ignore ${HOME}/.ignore'
 
 alias github=do_github
 do_github() {
@@ -228,3 +229,16 @@ function jsonprint() {
 if [ `which aws_completer` ]; then
   complete -C `which aws_completer` aws
 fi
+
+set clipboard=unnamed
+
+function aws_token() {
+  env |grep 'AWS_SESSION_TOKEN=' | cut -f2 -d"=" | pbcopy
+}
+
+function aws_key() {
+  env |grep 'AWS_ACCESS_KEY_ID=' | cut -f2 -d"=" | pbcopy
+}
+function aws_secret() {
+  env |grep 'AWS_SECRET_ACCESS_KEY=' | cut -f2 -d"=" | pbcopy
+}

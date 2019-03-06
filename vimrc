@@ -19,6 +19,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'rking/ag.vim'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-rhubarb'
 "Python
 "Bundle 'syntastic'
 "Bundle 'pyflakes'
